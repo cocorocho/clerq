@@ -8,7 +8,9 @@ INSTALLED_APPS += [
 ]
 
 # Static / Media
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS += [
+    BASE_DIR / "node_tools" / "node_modules",
+]
 MEDIA_ROOT = BASE_DIR / "mediafiles"
 
 # Middlewares

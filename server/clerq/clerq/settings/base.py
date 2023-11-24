@@ -38,9 +38,13 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # 3rd Party
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
     # Apps
-    "accounts",
     "core",
+    "accounts",
+    "appointments",
 ]
 
 MIDDLEWARE = [
@@ -50,6 +54,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
@@ -120,11 +125,21 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = "/var/www"
+STATICFILES_DIRS = [
+    BASE_DIR / "staticfiles",
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Auth
+# AUTH
 AUTH_USER_MODEL = "accounts.User"
+LOGIN_URL = "/account/signin/"
+LOGIN_REDIRECT_URL = "/dashboard/"
+
+# ALLAUTH
+ACCOUNT_SESSION_REMEMBER = False
+ACCOUNT_ADAPTER = "accounts.adapters.AccountAdapter"
