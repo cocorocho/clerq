@@ -1,21 +1,28 @@
 {% load static %}
 
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clerq</title>
     <script type="module" src="{% static 'htmx.org/dist/htmx.min.js' %}"></script>
+    <script type="module" src="{% static 'alpinejs/dist/cdn.min.js' %}">
+        import Alpine from 'alpinejs'
+        window.Alpine = Alpine
+        Alpine.start()
+    </script>
+    <link rel="stylesheet" href="{% static 'flatpickr/dist/flatpickr.min.css' %}">
+    <script type="module" src="{% static 'flatpickr/dist/flatpickr.min.js' %}">
+        import flatpickr from "flatpickr";
+        window.flatpickr = flatpickr;
+    </script>
     <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
-    <link rel="stylesheet" href="{% static 'css/themes/pluto.css' %}">
-    <style>
-        body {
-            @apply bg-red-500;
-        }
-    </style>
 </head>
+
 <body>
-{% block content %}
-{% endblock content %}
+    {% block content %}
+    {% endblock content %}
 </body>
+
 </html>

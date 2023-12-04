@@ -16,16 +16,19 @@ Including another URLconf
 """
 from django.conf import settings
 from django.contrib import admin
-from django.urls import path, include, reverse
+from django.urls import path, include
 from django.conf.urls.static import static
-from django.views.generic.base import RedirectView
 
 from core.views import DashboardView
 
 urlpatterns = [
+    # Django / 3rd Party
     path("admin/", admin.site.urls),
+    path("tinymce/", include("tinymce.urls")),
+    path("account/", include("accounts.urls")),  # Includes allauth urls
+    # Apps
     path("", DashboardView.as_view(), name="dashboard"),
-    path("account/", include("accounts.urls")),
+    path("appointments/", include("appointments.urls")),
 ]
 
 if settings.DEBUG:

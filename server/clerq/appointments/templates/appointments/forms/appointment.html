@@ -1,0 +1,49 @@
+{% load i18n %}
+
+<form class="space-y-8" id="appointment-form" x-data>
+    <p class="form-label">{% translate "create appointment" %}</p>
+    {% csrf_token %}
+    {{ form.media }}
+
+    {% for field in form %}
+    {% if field.name != "appointment_date" and field.name != "appointment_time" %}
+    <div>
+        {{ field.label_tag }}
+        {{ field }}
+        {% if field.errors %}
+        {{ field.errors }}
+        {% endif %}
+    </div>
+    {% endif %}
+    {% endfor %}
+
+    <div class="flex flex-wrap gap-2">
+        <div>
+            {{ form.appointment_date.label_tag }}
+            {{ form.appointment_date }}
+            {{ form.appointment_date.errors }}
+        </div>
+        <div class="grow flex flex-col">
+            {{ form.appointment_time.label_tag }}
+            {{ form.appointment_time }}
+            {{ form.appointment_time.errors }}
+        </div>
+    </div>
+
+    <div class="block text-center">
+        {% if operation == "update" %}
+        <button class="btn btn-primary btn-wide capitalize"
+            hx-post="{% url 'appointments:appointment_update' pk=appointment.pk %}"
+            x-on:htmx:after-request="if (event.detail.xhr.status === 200) appointments_modal.close()"
+            hx-target="#appointments_modal_content">
+            {% translate "update appointment" %}
+        </button>
+        {% else %}
+        <button class="btn btn-primary btn-wide capitalize" hx-post="{% url 'appointments:appointment_create' %}"
+            x-on:htmx:after-request="if (event.detail.xhr.status === 201) appointments_modal.close()"
+            hx-target="#appointments_modal_content">
+            {% translate "add appointment" %}
+        </button>
+        {% endif %}
+    </div>
+</form>

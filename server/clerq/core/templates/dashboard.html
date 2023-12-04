@@ -1,0 +1,36 @@
+{% extends "components/sidebar.html" %}
+{% load i18n %}
+{% load tz %}
+{% load static %}
+
+{% block dashboard-nav %}
+<div class="navbar bg-base-200">
+    <div class="flex-1">
+        <label for="dashboard-drawer" class="btn btn-sm p-0 drawer-button lg:hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+                <path fill="currentColor" d="m6.05 19l5-7l-5-7H8.5l5 7l-5 7H6.05ZM12 19l5-7l-5-7h2.45l5 7l-5 7H12Z" />
+            </svg>
+        </label>
+    </div>
+    <div class="flex-none gap-2">
+        <ul class="flex gap-x-1">
+            {# show new appointment in all templates #}
+            {% if perms.Appointments.add_appointment %}
+            <li>
+                <button class="btn btn-primary capitalize" onclick="appointments_modal.showModal()"
+                    hx-get="{% url 'appointments:appointment_create' %}" hx-target="#appointments_modal_content">
+                    {% translate "new appointment" %}
+                </button>
+            </li>
+            {% endif %}
+
+            {% block drawer-nav-extend %}
+            {% endblock drawer-nav-extend %}
+        </ul>
+    </div>
+</div>
+{% endblock dashboard-nav %}
+
+{% block dashboard-content %}
+{% include "components/modal.html" with name="appointments_modal" %}
+{% endblock dashboard-content %}

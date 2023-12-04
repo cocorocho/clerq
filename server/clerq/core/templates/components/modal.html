@@ -1,0 +1,11 @@
+{% load i18n %}
+
+<dialog id="{{ name }}" class="modal">
+    <div class="modal-box bg-base-200 max-w-s md:max-w-lg lg:max-w-2xl flex flex-col overflow-hidden {{ classes }}">
+        <div id="{{ name }}_content" class="overflow-y-scroll p-2">
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>

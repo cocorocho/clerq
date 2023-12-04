@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "alpinejs": "^3.13.3",
+    "flatpickr": "^4.6.13",
     "htmx.org": "^1.9.9"
   },
   "devDependencies": {

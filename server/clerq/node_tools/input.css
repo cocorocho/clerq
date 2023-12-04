@@ -3,16 +3,26 @@
 @tailwind utilities;
 
 
-input {
+input, textarea, select {
     outline: none !important;
+    @apply w-full;
 }
 
-input[type=text], input[type=password] {
-    @apply input w-full;
+input[type=text], input[type=password], input[type=datetime-local],
+input[type=date] {
+    @apply input;
 }
 
-body {
-    @apply bg-base-300;
+textarea {
+    @apply textarea;
+}
+
+select {
+    @apply select;
+}
+
+.form-label {
+    @apply text-2xl font-semibold capitalize;
 }
 
 .helptext {
@@ -20,5 +30,19 @@ body {
 }
 
 .errorlist {
-    @apply text-error;
+    @apply text-error order-3;
+}
+
+/* Position errorlist below input */
+form div {
+    /* @apply flex flex-col; */
+}
+
+/* Flatpickr */
+.flatpickr-calendar {
+    @apply rounded-lg bg-base-100;
+}
+
+.flatpickr-calendar .selected {
+    @apply bg-primary border-primary;
 }

@@ -1,7 +1,6 @@
-from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.views.generic import RedirectView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class DashboardView(LoginRequiredMixin, TemplateView):
-    template_name = "base.html"
+class DashboardView(LoginRequiredMixin, RedirectView):
+    url = "appointments/"
