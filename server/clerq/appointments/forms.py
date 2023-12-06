@@ -1,5 +1,8 @@
 from typing import Any
+
 from django import forms
+from django.utils.translation import gettext_lazy as _
+from django.utils.timezone import now
 
 from tinymce.widgets import TinyMCE
 
@@ -37,3 +40,15 @@ class AppointmentForm(forms.ModelForm):
             ),
             "appointment_time": AppointmentTimeWidget(format="%H:%M"),
         }
+
+
+class AppointmentConclusionForm(forms.ModelForm):
+    class Meta:
+        model = Appointment
+        fields = ("conclusion_details",)
+        widgets = {"conclusion_details": TinyMCE()}
+
+    def save(self, commit: bool = True) -> Any:
+        self.instance.conclude_appointment()
+
+        return super().save(commit)

@@ -35,12 +35,11 @@ class AppointmentTestCase(TestCase):
     def test_appointment_datetime_unique_validation_raises_validationerror(
         self,
     ) -> None:
-        appointment = baker.make(Appointment, is_concluded=False)
+        appointment = baker.make(Appointment)
 
         with self.assertRaises(IntegrityError):
             baker.make(
                 Appointment,
                 appointment_date=appointment.appointment_date,
                 appointment_time=appointment.appointment_time,
-                is_concluded=False,
             )

@@ -1,0 +1,48 @@
+{% load i18n %}
+
+<div>
+    <div tabindex="0" class="collapse collapse-open collapse-arrow border border-base-300 bg-base-200">
+        <div class="collapse-title text-xl font-semibold">
+            {% translate "Current Appointment" %}
+        </div>
+        <div class="collapse-content">
+            <div>
+                {% if current_appointment %}
+                    {% include "appointments/components/appointment_card.html" with appointment=current_appointment color="bg-success" %}
+                {% else %}
+                    {% translate "No active appointment" %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div tabindex="0" class="collapse collapse-arrow border border-base-300 bg-base-200 mt-4">
+        <div class="collapse-title text-xl font-semibold">
+            {% translate "Today's Appointments" %}
+        </div>
+        <div class="collapse-content">
+            <ul>
+                {% for appointment in appointments_scheduled %}
+                <li class="py-2">
+                    {% include "appointments/components/appointment_card.html" with color="bg-warning" %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div tabindex="0" class="collapse collapse-arrow border border-base-300 bg-base-200 mt-4 collapse-open">
+        <div class="collapse-title text-xl font-semibold">
+            {% translate "Concluded Appointments" %}
+        </div>
+        <div class="collapse-content">
+            <ul>
+                {% for appointment in appointments_concluded %}
+                <li class="py-2">
+                    {% include "appointments/components/appointment_card.html" with color="bg-error" with_conclusion_details=True %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>

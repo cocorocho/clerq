@@ -5,6 +5,7 @@
 {{ block.super }}
 <div class="w-full">
     <div class="overflow-x-auto pt-4">
+        {% if user.role == "APTR" %}
         <table class="table table-pin-cols table-md table-fixed">
             <colgroup>
                 <col class="w-1/4">
@@ -27,7 +28,7 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody hx-target="closest tr" hx-swap="outerHTML" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+            <tbody hx-target="closest tr" hx-swap="outerHTML" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' x-data>
                 {% for appointment in appointment_list %}
                 <tr class="hover bg-current/50 transition duration-75">
                     <td class="truncate" title="{{ appointment.client_name }}">
@@ -41,6 +42,16 @@
                     </td>
                     <td>
                         <div class="flex justify-end gap-x-1">
+                            {% if user.role == "APTR" %}
+                                <button type="button" class="btn btn-info btn-sm capitalize" hx-post="{% url 'appointments:appointment_takein' appointment_id=appointment.pk %}"
+                                    {% if appointment.appointee_is_busy %}
+                                        disabled="true"
+                                    {% endif %}
+                                >
+                                    {% translate "take" %}
+                                </button>
+                            {% endif %}
+
                             {% if perms.Appointments.change_appointment %}
                             <button type="button" class="btn btn-sm btn-warning capitalize px-1"
                                 onclick="appointments_modal.showModal()"
@@ -70,6 +81,9 @@
                 {% endfor %}
             </tbody>
         </table>
+        {% elif user.role == "APTE" %}
+        {% include "appointments/appointee_appointment_list.html" %}
+        {% endif %}
     </div>
 </div>
 {% endblock dashboard-content %}

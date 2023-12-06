@@ -15,7 +15,7 @@
     <div class="flex-none gap-2">
         <ul class="flex gap-x-1">
             {# show new appointment in all templates #}
-            {% if perms.Appointments.add_appointment %}
+            {% if perms.appointments.add_appointment and user.role == "APTR" %}
             <li>
                 <button class="btn btn-primary capitalize" onclick="appointments_modal.showModal()"
                     hx-get="{% url 'appointments:appointment_create' %}" hx-target="#appointments_modal_content">

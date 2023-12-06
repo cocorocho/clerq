@@ -11,9 +11,6 @@ class BaseQuerySet(models.QuerySet):
 class BaseManager(models.Manager):
     """Base Manager"""
 
-    def get_queryset(self) -> QuerySet:
-        return BaseQuerySet(model=self.model, using=self._db)
-
 
 class BaseModel(models.Model):
     """Base Model"""

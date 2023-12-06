@@ -3,6 +3,15 @@
 @tailwind utilities;
 
 
+fieldset {
+    @apply border-2 border-solid p-4 rounded-lg;
+}
+
+fieldset legend {
+    @apply px-2 text-lg font-semibold capitalize;
+}
+
+
 input, textarea, select {
     outline: none !important;
     @apply w-full;
@@ -29,13 +38,10 @@ select {
     @apply block;
 }
 
-.errorlist {
-    @apply text-error order-3;
-}
 
 /* Position errorlist below input */
-form div {
-    /* @apply flex flex-col; */
+.errorlist {
+    @apply text-error order-3;
 }
 
 /* Flatpickr */
@@ -45,4 +51,14 @@ form div {
 
 .flatpickr-calendar .selected {
     @apply bg-primary border-primary;
+}
+
+
+/* TinyMCE */
+.tox-statusbar__branding {
+    display: none;
+}
+
+.tox-tinymce {
+    @apply !rounded-lg !bg-base-100;
 }

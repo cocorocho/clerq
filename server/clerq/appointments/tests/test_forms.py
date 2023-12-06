@@ -14,7 +14,7 @@ class AppointmentFormTestCase(TestCase):
     def test_create_appointment(self) -> None:
         appointer_staff = baker.make("accounts.User")
         staff = baker.make("accounts.User")
-        appointment = baker.prepare(Appointment, is_concluded=False)
+        appointment = baker.prepare(Appointment)
 
         form_data = {
             "client_name": appointment.client_name,
@@ -38,9 +38,9 @@ class AppointmentFormTestCase(TestCase):
         staff = baker.make("accounts.User")
 
         # Create an appointment
-        appointment = baker.make(Appointment, is_concluded=False)
+        appointment = baker.make(Appointment)
         # Dummy appointment
-        new_appointment = baker.prepare(Appointment, is_concluded=False)
+        new_appointment = baker.prepare(Appointment)
 
         form_data = {
             "client_name": new_appointment.client_name,

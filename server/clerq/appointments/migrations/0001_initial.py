@@ -7,7 +7,6 @@ import tinymce.models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -16,25 +15,74 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Appointment',
+            name="Appointment",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('subject', models.CharField(max_length=200, verbose_name='appointment subject')),
-                ('details', tinymce.models.HTMLField(blank=True, verbose_name='appointment details')),
-                ('appointment_date', models.DateField(verbose_name='appointment date')),
-                ('appointment_time', models.TimeField(verbose_name='appointment time')),
-                ('is_concluded', models.BooleanField(default=False, editable=False, verbose_name='appointment concluded')),
-                ('conclusion_date', models.DateTimeField(blank=True, editable=False, null=True)),
-                ('conclusion_details', tinymce.models.HTMLField(blank=True, verbose_name='conclusion details')),
-                ('appointee', models.ForeignKey(on_delete=models.SET(appointments.models.get_deleted_user), related_name='appointments', to=settings.AUTH_USER_MODEL, verbose_name='appointee')),
-                ('appointer', models.ForeignKey(editable=False, on_delete=models.SET(appointments.models.get_deleted_user), related_name='created_appointments', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                (
+                    "subject",
+                    models.CharField(
+                        max_length=200, verbose_name="appointment subject"
+                    ),
+                ),
+                (
+                    "details",
+                    tinymce.models.HTMLField(
+                        blank=True, verbose_name="appointment details"
+                    ),
+                ),
+                ("appointment_date", models.DateField(verbose_name="appointment date")),
+                ("appointment_time", models.TimeField(verbose_name="appointment time")),
+                (
+                    "is_concluded",
+                    models.BooleanField(
+                        default=False,
+                        editable=False,
+                        verbose_name="appointment concluded",
+                    ),
+                ),
+                (
+                    "conclusion_date",
+                    models.DateTimeField(blank=True, editable=False, null=True),
+                ),
+                (
+                    "conclusion_details",
+                    tinymce.models.HTMLField(
+                        blank=True, verbose_name="conclusion details"
+                    ),
+                ),
+                (
+                    "appointee",
+                    models.ForeignKey(
+                        on_delete=models.SET(appointments.models.get_deleted_user),
+                        related_name="appointments",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="appointee",
+                    ),
+                ),
+                (
+                    "appointer",
+                    models.ForeignKey(
+                        editable=False,
+                        on_delete=models.SET(appointments.models.get_deleted_user),
+                        related_name="created_appointments",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'appointment',
-                'verbose_name_plural': 'appointments',
-                'ordering': ('created',),
+                "verbose_name": "appointment",
+                "verbose_name_plural": "appointments",
+                "ordering": ("created",),
             },
         ),
     ]

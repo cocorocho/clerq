@@ -6,6 +6,8 @@ from appointments.views import (
     AppointmentDeleteView,
     AppointmentUpdateView,
     AppointmentDetailView,
+    AppointmentConcludeView,
+    take_in_appointment,
 )
 
 
@@ -19,6 +21,14 @@ urlpatterns = [
     ),
     path(
         "<int:pk>/details/", AppointmentDetailView.as_view(), name="appointment_details"
+    ),
+    path(
+        "<int:appointment_id>/takein/", take_in_appointment, name="appointment_takein"
+    ),
+    path(
+        "<int:pk>/conclude/",
+        AppointmentConcludeView.as_view(),
+        name="appointment_conclude",
     ),
     path("create/", AppointmentCreateView.as_view(), name="appointment_create"),
 ]
