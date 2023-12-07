@@ -1,12 +1,10 @@
 from typing import Any
-from django.db import models
 
 from django.utils.timezone import now
 from django.db.models import QuerySet
 from django.forms.models import BaseModelForm
 from django.views.generic import (
     CreateView,
-    ListView,
     View,
     UpdateView,
     DetailView,
@@ -14,13 +12,19 @@ from django.views.generic import (
 )
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import get_object_or_404
-from django.contrib.auth.decorators import login_required, user_passes_test
 from django.urls import reverse_lazy
 from django.http import HttpRequest, HttpResponse
 
+from django_filters.views import FilterView
+
 from core.base.auth.mixins import LoginAndPermissionRequiredMixin
-from appointments.forms import AppointmentForm, AppointmentConclusionForm
+from appointments.forms import (
+    AppointmentForm,
+    AppointmentConclusionForm,
+    AppointmentFilterForm,
+)
 from appointments.models import Appointment
+from appointments.filters import AppointmentFilterSet
 
 
 class AppointmentDeleteView(LoginAndPermissionRequiredMixin, View):
@@ -79,12 +83,13 @@ class AppointmentDetailView(LoginAndPermissionRequiredMixin, DetailView):
         return context
 
 
-class AppointmentList(LoginAndPermissionRequiredMixin, ListView):
+class AppointmentList(LoginAndPermissionRequiredMixin, FilterView):
     """Get appointments - paginated"""
 
     paginate_by = 25
-    template_name = "appointments/appointment_list.html"
+    template_name = "appointments/index.html"
     permission_required = ("appointments.view_appointment",)
+    filterset_class = AppointmentFilterSet
 
     def get_queryset(self) -> QuerySet[Appointment]:
         queryset = (
@@ -98,19 +103,34 @@ class AppointmentList(LoginAndPermissionRequiredMixin, ListView):
                 appointed_staff=self.request.user,
             )
 
+        # If `appointment_date_start` param is not present in GET
+        # Limit queryset to today only
+        if not self.request.GET.get("appointment_date"):
+            queryset = queryset.filter(appointment_date=now().date())
+
         return queryset
 
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-
+    def add_appointee_querysets_to_context(self, context: dict) -> dict:
+        # Get base queryset
         appointments_qs = self.get_queryset()
+        # Apply FilterSet
+        appointments_qs = self.get_filterset(self.filterset_class).qs
 
+        # Add querysets to context
         context[
             "current_appointment"
         ] = Appointment.objects.get_current_appointment_for_user(self.request.user)
         context["appointments_concluded"] = appointments_qs.concluded_appointments()
         context["appointments_scheduled"] = appointments_qs.scheduled()
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+
+        self.add_appointee_querysets_to_context(context)
+
         context["conclusion_form"] = AppointmentConclusionForm()
+        context["filter_form"] = AppointmentFilterForm(initial=self.request.GET)
+
         return context
 
 

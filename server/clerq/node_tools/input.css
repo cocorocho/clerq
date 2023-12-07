@@ -14,7 +14,7 @@ fieldset legend {
 
 input, textarea, select {
     outline: none !important;
-    @apply w-full;
+    @apply w-full md:w-auto;
 }
 
 input[type=text], input[type=password], input[type=datetime-local],

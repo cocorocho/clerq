@@ -4,8 +4,7 @@ from typing import Any
 
 from django.forms import Widget, TimeInput
 from django.utils.timezone import now
-from django.forms.renderers import BaseRenderer
-from django.utils.safestring import SafeText
+from django.utils.formats import get_format
 
 from appointments.models import Appointment
 from appointments.utils import get_appointment_periods
@@ -33,6 +32,9 @@ class FlatpickrDateWidget(Widget):
 
     template_name = "forms/widgets/flatpickr_date.html"
 
+    class Media:
+        js = ("flatpickr/dist/flatpickr.min.js",)
+
     def __init__(
         self, attrs: dict | None = None, flatpickr_attrs: dict | None = None
     ) -> None:
@@ -40,9 +42,6 @@ class FlatpickrDateWidget(Widget):
             attrs = {}
         if not flatpickr_attrs:
             flatpickr_attrs = {}
-
-        # Make input hidden
-        attrs["hidden"] = True
 
         self.flatpickr_attrs = flatpickr_attrs
         super().__init__(attrs)
@@ -87,6 +86,10 @@ class FlatpickrDateWidget(Widget):
                     ]
                 }
             )
+
+        # # Set default format as locale date format
+        self.flatpickr_attrs.setdefault("altFormat", get_format("SHORT_DATE_FORMAT"))
+        self.flatpickr_attrs.setdefault("altInput", True)
 
         context["widget"]["attrs"].update(
             {

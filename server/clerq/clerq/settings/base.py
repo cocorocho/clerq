@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "tinymce",
+    "django_filters",
     # Apps
     "core",
     "accounts",

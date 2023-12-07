@@ -1,0 +1,9 @@
+{% extends "dashboard.html" %}
+{% load i18n %}
+
+{% block dashboard-content %}
+{{ block.super }}
+<div class="w-full">
+    {% include "appointments/partial/appointment_list.html" %}
+</div>
+{% endblock dashboard-content %}

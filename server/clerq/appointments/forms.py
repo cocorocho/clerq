@@ -3,6 +3,7 @@ from typing import Any
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import now
+from django.contrib.auth import get_user_model
 
 from tinymce.widgets import TinyMCE
 
@@ -35,6 +36,7 @@ class AppointmentForm(forms.ModelForm):
                 attrs={
                     # Time picker will communicate through ref
                     "x-ref": "appointmentDatePicker",
+                    "hidden": True,
                 },
                 flatpickr_attrs={"inline": True, "disable_previous_dates": True},
             ),
@@ -52,3 +54,17 @@ class AppointmentConclusionForm(forms.ModelForm):
         self.instance.conclude_appointment()
 
         return super().save(commit)
+
+
+class AppointmentFilterForm(forms.Form):
+    appointment_date = forms.CharField(
+        required=False,
+        widget=FlatpickrDateWidget(flatpickr_attrs={"mode": "range"}),
+        initial=now().date(),
+    )
+    # appointment_date_end = forms.CharField(required=False, widget=FlatpickrDateWidget())
+    appointed_staff = forms.ModelMultipleChoiceField(
+        queryset=get_user_model().objects.filter(role="APTE"),
+        widget=forms.SelectMultiple(attrs={"class": "!h-full"}),
+        required=False,
+    )
