@@ -1,86 +1,133 @@
 {% load i18n %}
+{% load filters %}
 
 {# appointments filter #}
 {% include "appointments/components/appointment_filter.html" %}
 
-<div class="overflow-x-auto pt-4">
+<div
+    class="overflow-x-auto pt-4"
+    hx-ext="ws"
+    ws-connect="/appointments/ws/"
+    x-data="{
+        busyAppointees: [],
+        wsHandleResponse(event) {
+            const userRole = '{{ user.role }}'
+            let eventData = event.detail.message
+
+            // Parse to JSON
+            try {
+                eventData = JSON.parse(eventData)
+            } catch (error) {
+                // Parse error, No need to proceed
+                return
+            }
+
+            const eventType = eventData.event_type
+
+            if (eventType === 'appointment_take') {
+                // Appointment is taken in, add appointed staff to `busyAppointees`
+
+                this.busyAppointees.push(eventData.appointed_staff_id)
+
+                if (userRole === 'APTE') {
+                    location.reload()
+                }
+            } else if (eventType == 'appointment_conclude') {
+                // Appointment is concluded, remove appointed staff from `busyAppointees`
+
+                this.busyAppointees.splice(
+                    this.busyAppointees.indexOf(eventData.appointed_staff_id),
+                    1
+                )
+            }
+        },
+    }"
+    {# bind event using alpine to be able to use the function #}
+    @htmx:ws-after-message="wsHandleResponse"
+>
+    <div hx-text="busyAppointees"></div>
     {% if user.role == "APTR" %}
-    <table class="table table-pin-cols table-md table-fixed">
-        <colgroup>
-            <col class="w-1/4">
-            <col class="w-1/4">
-            <col class="w-1/4">
-            <col class="w-1/4">
-        </colgroup>
-
-        <thead>
-            <tr class="capitalize">
-                <th>
-                    {% translate "client" %}
-                </th>
-                <th>
-                    {% translate "time" %}
-                </th>
-                <th>
-                    {% translate "appointed staff" %}
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody hx-target="closest tr" hx-swap="outerHTML" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' x-data>
-            {% for appointment in appointment_list %}
-            <tr class="hover bg-current/50 transition duration-75">
-                <td class="truncate" title="{{ appointment.client_name }}">
-                    {{ appointment.client_name }}
-                </td>
-                <td>
-                    {{ appointment.appointment_time|time:"TIME_FORMAT" }}
-                </td>
-                <td class="truncate" title="{{ appointment.appointed_staff }}">
-                    {{ appointment.appointed_staff }}
-                </td>
-                <td>
-                    <div class="flex justify-end gap-x-1">
-                        {% if user.role == "APTR" %}
-                            <button type="button" class="btn btn-info btn-sm capitalize" hx-post="{% url 'appointments:appointment_takein' appointment_id=appointment.pk %}"
-                                {% if appointment.appointee_is_busy %}
-                                    disabled="true"
+        <div>
+            <table class="table table-pin-cols table-md table-fixed">
+                <colgroup>
+                    <col class="w-1/4">
+                    <col class="w-1/4">
+                    <col class="w-1/4">
+                    <col class="w-1/4">
+                </colgroup>
+    
+                <thead>
+                    <tr class="capitalize">
+                        <th>
+                            {% translate "client" %}
+                        </th>
+                        <th>
+                            {% translate "time" %}
+                        </th>
+                        <th>
+                            {% translate "appointed staff" %}
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody hx-target="closest tr" hx-swap="outerHTML" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' x-data>
+                    {% for appointment in appointment_list %}
+                    <tr class="hover bg-current/50 transition duration-75">
+                        <td class="truncate" title="{{ appointment.client_name }}">
+                            {{ appointment.client_name }}
+                        </td>
+                        <td>
+                            {{ appointment.appointment_time|time:"TIME_FORMAT" }}
+                        </td>
+                        <td class="truncate" title="{{ appointment.appointed_staff }}">
+                            {{ appointment.appointed_staff }}
+                        </td>
+                        <td>
+                            <div class="flex justify-end gap-x-1">
+                                {% if user.role == "APTR" %}
+                                <form>
+                                    <input type="hidden" name="appointment" value="{{ appointment.pk }}">
+                                    <button type="button" class="btn btn-info btn-sm capitalize"
+                                        :disabled="busyAppointees.includes({{ appointment.appointed_staff.pk }}) || {{ appointment.appointee_is_busy|tojs }}"
+                                        hx-post="{% url 'appointments:appointment_takein' appointment_id=appointment.id %}"
+                                        hx-headers='{"event-type": "appointment_take"}'
+                                    >
+                                        {% translate "take" %}
+                                    </button>
+                                </form>
                                 {% endif %}
-                            >
-                                {% translate "take" %}
-                            </button>
-                        {% endif %}
-
-                        {% if perms.Appointments.change_appointment %}
-                        <button type="button" class="btn btn-sm btn-warning capitalize px-1"
-                            onclick="appointments_modal.showModal()"
-                            hx-get="{% url 'appointments:appointment_update' pk=appointment.pk %}"
-                            hx-target="#appointments_modal_content" hx-swap="innerHTML">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 256 256">
-                                <path fill="currentColor"
-                                    d="M232.49 215.51L185 168a92.12 92.12 0 1 0-17 17l47.53 47.54a12 12 0 0 0 17-17ZM44 112a68 68 0 1 1 68 68a68.07 68.07 0 0 1-68-68Z" />
-                            </svg>
-                        </button>
-                        {% endif %}
-
-                        {% if perms.Appointments.delete_appointment %}
-                        <button type="button" class="btn btn-sm btn-error capitalize px-1"
-                            title="{% translate 'cancel appointment' %}"
-                            hx-delete="{% url 'appointments:appointment_delete' pk=appointment.pk %}"
-                            hx-confirm="{% translate 'cancel appointment' %}?">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                <path fill="currentColor"
-                                    d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21H7Zm2-4h2V8H9v9Zm4 0h2V8h-2v9Z" />
-                            </svg>
-                        </button>
-                        {% endif %}
-                    </div>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    
+                                {% if perms.Appointments.change_appointment %}
+                                <button type="button" class="btn btn-sm btn-warning capitalize px-1"
+                                    onclick="appointments_modal.showModal()"
+                                    hx-get="{% url 'appointments:appointment_update' pk=appointment.pk %}"
+                                    hx-target="#appointments_modal_content" hx-swap="innerHTML">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 256 256">
+                                        <path fill="currentColor"
+                                            d="M232.49 215.51L185 168a92.12 92.12 0 1 0-17 17l47.53 47.54a12 12 0 0 0 17-17ZM44 112a68 68 0 1 1 68 68a68.07 68.07 0 0 1-68-68Z" />
+                                    </svg>
+                                </button>
+                                {% endif %}
+    
+                                {% if perms.Appointments.delete_appointment %}
+                                <button type="button" class="btn btn-sm btn-error capitalize px-1"
+                                    title="{% translate 'cancel appointment' %}"
+                                    hx-delete="{% url 'appointments:appointment_delete' pk=appointment.pk %}"
+                                    hx-confirm="{% translate 'cancel appointment' %}?">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                        <path fill="currentColor"
+                                            d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21H7Zm2-4h2V8H9v9Zm4 0h2V8h-2v9Z" />
+                                    </svg>
+                                </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     {% elif user.role == "APTE" %}
-    {% include "appointments/appointee_appointment_list.html" %}
+        {% include "appointments/appointee_appointment_list.html" %}
     {% endif %}
 </div>

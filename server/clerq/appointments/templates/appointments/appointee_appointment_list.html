@@ -6,13 +6,11 @@
             {% translate "Current Appointment" %}
         </div>
         <div class="collapse-content">
-            <div>
-                {% if current_appointment %}
-                    {% include "appointments/components/appointment_card.html" with appointment=current_appointment color="bg-success" %}
-                {% else %}
-                    {% translate "No active appointment" %}
-                {% endif %}
-            </div>
+            {% if current_appointment %}
+                {% include "appointments/components/appointment_card.html" with appointment=current_appointment color="bg-success" %}
+            {% else %}
+                {% translate "No active appointment" %}
+            {% endif %}
         </div>
     </div>
 
@@ -23,9 +21,13 @@
         <div class="collapse-content">
             <ul>
                 {% for appointment in appointments_scheduled %}
-                <li class="py-2">
-                    {% include "appointments/components/appointment_card.html" with color="bg-warning" %}
-                </li>
+                    <li class="py-2">
+                        {% include "appointments/components/appointment_card.html" with color="bg-warning" %}
+                    </li>
+                {% empty %}
+                    <li>
+                        {% translate "No appointments today" %}
+                    </li>
                 {% endfor %}
             </ul>
         </div>
@@ -38,9 +40,13 @@
         <div class="collapse-content">
             <ul>
                 {% for appointment in appointments_concluded %}
-                <li class="py-2">
-                    {% include "appointments/components/appointment_card.html" with color="bg-error" with_conclusion_details=True %}
-                </li>
+                    <li class="py-2">
+                        {% include "appointments/components/appointment_card.html" with color="bg-error" with_conclusion_details=True %}
+                    </li>
+                {% empty %}
+                    <li>
+                        {% translate "No concluded appointments today" %}
+                    </li>
                 {% endfor %}
             </ul>
         </div>

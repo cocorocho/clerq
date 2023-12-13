@@ -25,6 +25,7 @@ from appointments.forms import (
 )
 from appointments.models import Appointment
 from appointments.filters import AppointmentFilterSet
+from appointments.consumers import AppointmentConsumer
 
 
 class AppointmentDeleteView(LoginAndPermissionRequiredMixin, View):
@@ -170,6 +171,15 @@ class AppointmentConcludeView(
 
         return self.request.user.role == "APTE"
 
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        response = super().form_valid(form)
+
+        appointment = self.get_object()
+
+        AppointmentConsumer.broadcast_appointment_concluded(appointment)
+
+        return response
+
 
 def take_in_appointment(request: HttpRequest, appointment_id: int) -> HttpResponse:
     """Take in an appointment for Appointee"""
@@ -178,5 +188,7 @@ def take_in_appointment(request: HttpRequest, appointment_id: int) -> HttpRespon
         Appointment.objects.filter(in_progress=False), pk=appointment_id
     )
     appointment.takein_appointment(True)
+
+    AppointmentConsumer.broadcast_appointment_takein(appointment)
 
     return HttpResponse()

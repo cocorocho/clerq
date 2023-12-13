@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -145,3 +146,16 @@ LOGIN_REDIRECT_URL = "/dashboard/"
 # ALLAUTH
 ACCOUNT_SESSION_REMEMBER = False
 ACCOUNT_ADAPTER = "accounts.adapters.AccountAdapter"
+
+# Channels
+ASGI_APPLICATION = "clerq.asgi.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [
+                ("127.0.0.1", 6379),
+            ]
+        },
+    }
+}

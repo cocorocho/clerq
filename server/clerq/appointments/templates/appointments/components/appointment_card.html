@@ -4,40 +4,39 @@
     <div class="bg-base-100 p-4 ml-2 rounded-r-lg hover:bg-base-100/90 transition-color duration-75">
         <fieldset class="border-primary">
             <legend>{% translate "information" %}</legend>
-            <div class="flex justify-between">
-                <div>
-                    <h3 class="font-semibold capitalize underline">
-                        {% translate "client name" %}
-                    </h3>
-                    <p>
-                        {{ appointment.client_name }}
-                    </p>
-                </div>
-                <div>
-                    <h4 class="capitalize font-semibold text-md underline">
-                        {% translate "date" %}
-                    </h4>
-                    <small>
-                        <p>
-                            {{ appointment.appointment_date }}
-                        </p>
-                        <p>
-                            {{ appointment.appointment_time }}
-                        </p>
-                    </small>
-                </div>
-            </div>
-            <div class="divider"></div>
             <div>
+                <div class="flex justify-between">
+                    <div class="basis-3/4">
+                        <h3 class="font-semibold capitalize underline">
+                            {% translate "client name" %}
+                        </h3>
+                        <p title="{{ appointment.client_name }}">
+                            {{ appointment.client_name|truncatechars:50 }}
+                        </p>
+                    </div>
+                    <div>
+                        <h4 class="capitalize font-semibold text-md underline">
+                            {% translate "date" %}
+                        </h4>
+                        <small>
+                            <p>
+                                {{ appointment.appointment_date }}
+                            </p>
+                            <p>
+                                {{ appointment.appointment_time }}
+                            </p>
+                        </small>
+                    </div>
+                </div>
+                <div class="divider"></div>
                 <div>
                     <h3 class="font-semibold capitalize">
                         {% translate "subject" %}
                     </h3>
-                    <p>
-                        {{ appointment.subject }}
+                    <p title="{{ appointment.client_name }}">
+                        {{ appointment.subject|truncatechars:50 }}
                     </p>
                 </div>
-            </div>
         </fieldset>
         {% if appointment.in_progress %}
             <div class="divider"></div>
@@ -56,25 +55,25 @@
             </div>
         {% endif %}
         {% if with_conclusion_details %}
-        <div class="divider"></div>
-        <div>
-            <div class="flex justify-between">
-                <h3 class="font-semibold capitalize underline">
-                    {% translate "conclusion details" %}
-                </h3>
+            <div class="divider"></div>
+            <div>
+                <div class="flex justify-between">
+                    <h3 class="font-semibold capitalize underline">
+                        {% translate "conclusion details" %}
+                    </h3>
+                    <div>
+                        <h4 class="capitalize font-semibold text-md underline">
+                            {% translate "date" %}
+                        </h4>
+                        <small>
+                            {{ appointment.conclusion_date }}
+                        </small>
+                    </div>
+                </div>
                 <div>
-                    <h4 class="capitalize font-semibold text-md underline">
-                        {% translate "date" %}
-                    </h4>
-                    <small>
-                        {{ appointment.conclusion_date }}
-                    </small>
+                    {{ appointment.conclusion_details|safe }}
                 </div>
             </div>
-            <div>
-                {{ appointment.conclusion_details|safe }}
-            </div>
-        </div>
         {% endif %}
     </div>
 </div>
