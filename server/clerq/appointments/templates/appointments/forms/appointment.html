@@ -6,15 +6,15 @@
     {{ form.media }}
 
     {% for field in form %}
-    {% if field.name != "appointment_date" and field.name != "appointment_time" %}
-    <div>
-        {{ field.label_tag }}
-        {{ field }}
-        {% if field.errors %}
-        {{ field.errors }}
+        {% if field.name != "appointment_date" and field.name != "appointment_time" %}
+            <div>
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                {{ field.errors }}
+                {% endif %}
+            </div>
         {% endif %}
-    </div>
-    {% endif %}
     {% endfor %}
 
     <div class="flex flex-wrap gap-2">

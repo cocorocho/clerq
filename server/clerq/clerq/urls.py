@@ -18,8 +18,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
-
-from core.views import DashboardView
+from django.views.generic import RedirectView
 
 urlpatterns = [
     # Django / 3rd Party
@@ -27,7 +26,7 @@ urlpatterns = [
     path("tinymce/", include("tinymce.urls")),
     path("account/", include("accounts.urls")),  # Includes allauth urls
     # Apps
-    path("", DashboardView.as_view(), name="dashboard"),
+    path("", RedirectView.as_view(url="appointments/"), name="dashboard"),
     path("appointments/", include("appointments.urls")),
 ]
 

@@ -28,8 +28,3 @@ class AppointmentFilterSet(FilterSet):
             filter_expression = "__range"
 
         return queryset.filter(**{f"{name}{filter_expression}": value})
-
-    @property
-    def qs(self):
-        return self.queryset.filter(appointment_date="2023-12-07")
-        return super().qs

@@ -53,6 +53,10 @@ select {
     @apply bg-primary border-primary;
 }
 
+.flatpickr-current-month {
+    @apply pt-0;
+}
+
 
 /* TinyMCE */
 .tox-statusbar__branding {

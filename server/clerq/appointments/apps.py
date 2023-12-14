@@ -13,5 +13,5 @@ class AppointmentsConfig(AppConfig):
         "14:25"
         "23:5"
     """
-    working_hours = ("8:00", "14:25")
+    working_hours = ("8:00", "16:00")
     appointment_period = 30  # minutes

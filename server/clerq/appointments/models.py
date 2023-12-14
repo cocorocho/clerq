@@ -90,7 +90,7 @@ class Appointment(BaseModel):
     class Meta:
         verbose_name = _("appointment")
         verbose_name_plural = _("appointments")
-        ordering = ("appointment_date", "-appointment_time")
+        ordering = ("appointment_date", "appointment_time")
         constraints = (
             models.UniqueConstraint(
                 fields=["appointment_date", "appointment_time"],

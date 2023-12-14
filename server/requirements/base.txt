@@ -2,3 +2,5 @@ django
 django-allauth
 django-tinymce
 django-filter
+channels[daphne]
+channels-redis

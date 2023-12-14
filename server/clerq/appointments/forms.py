@@ -12,6 +12,11 @@ from appointments.models import Appointment
 
 
 class AppointmentForm(forms.ModelForm):
+    appointed_staff = forms.ModelChoiceField(
+        to_field_name="id",
+        queryset=get_user_model().objects.filter(role="APTE"),
+    )
+
     def __init__(self, *args, **kwargs) -> None:
         disable_fields = kwargs.pop("disable_fields", False)
         super().__init__(*args, **kwargs)
@@ -37,10 +42,14 @@ class AppointmentForm(forms.ModelForm):
                     # Time picker will communicate through ref
                     "x-ref": "appointmentDatePicker",
                     "hidden": True,
+                    "class": "hidden",
+                    "@change": "$dispatch('selected-date-changed')",
                 },
                 flatpickr_attrs={"inline": True, "disable_previous_dates": True},
             ),
             "appointment_time": AppointmentTimeWidget(format="%H:%M"),
+            "client_name": forms.TextInput(attrs={"class": "w-full"}),
+            "subject": forms.TextInput(attrs={"class": "w-full"}),
         }
 
 
@@ -62,7 +71,6 @@ class AppointmentFilterForm(forms.Form):
         widget=FlatpickrDateWidget(flatpickr_attrs={"mode": "range"}),
         initial=now().date(),
     )
-    # appointment_date_end = forms.CharField(required=False, widget=FlatpickrDateWidget())
     appointed_staff = forms.ModelMultipleChoiceField(
         queryset=get_user_model().objects.filter(role="APTE"),
         widget=forms.SelectMultiple(attrs={"class": "!h-full"}),

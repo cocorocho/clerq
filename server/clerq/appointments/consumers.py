@@ -19,16 +19,12 @@ class AppointmentConsumer(WebsocketConsumer):
         )
 
         self.accept()
-        # async_to_sync(self.channel_layer.group_send)(
-        #     self.channel_layer_name,
-        #     {
-        #         "type": "appointment_message_echo",
-        #         "message": "text",
-        #     },
-        # )
 
     def disconnect(self, code):
-        return super().disconnect(code)
+        async_to_sync(self.channel_layer.group_discard)(
+            self.channel_layer_name,
+            self.channel_name,
+        )
 
     def receive(
         self, text_data: str | None = None, bytes_data: bytes | None = None

@@ -1,39 +1,42 @@
-<div class="timeselector-wrapper grow" x-data="{
-    selectedTime: '{{ widget.value|default:'undefined' }}',
-    bookedTimes: {{ booked_times }},
-    timeIsBooked (time) {
-        // appointmentDatePicker ref is defined in AppointmentForm
-        const currentlySelectedDate = $refs.appointmentDatePicker.value
+<div class="timeselector-wrapper grow"
+    x-data="{
+        selectedTime: '{{ widget.value|default:'undefined' }}',
+        selectedDate: $refs.appointmentDatePicker.value,
+        bookedTimes: {{ booked_times }},
+        timeIsBooked (time) {
+            return this.bookedTimes[this.selectedDate]?.includes(time)
+        },
+        selectTime (time) {
+            if (this.timeIsBooked(time)) return
 
-        if (
-            Object.keys(this.bookedTimes)?.includes(currentlySelectedDate) &&
-            this.bookedTimes[currentlySelectedDate]?.includes(time)
-        ) return true
-
-        return false
-    },
-    selectTime (time) {
-        if (this.timeIsBooked(time)) return
-
-        this.selectedTime = time
-    }, 
-}">
+            this.selectedTime = time
+        },
+    }"
+    @selected-date-changed.window="selectedDate = $refs.appointmentDatePicker.value"
+>
     <input type="text" id="{{ widget.attrs.id }}" name="{{ widget.name }}" :value="selectedTime" hidden>
     <div class="bg-base-100 rounded-lg h-full">
         <ul class="grid grid-cols-4 p-2 gap-1 text-sm">
             {% for time in times %}
-            <li class="rounded-lg p-1 text-center" @click="selectTime('{{ time.0 }}')" :class="{
-                    'bg-primary': ('{{ time.0 }}' === selectedTime),
-                    'hover:bg-base-200': ('{{ time.0 }}' !== selectedTime),
-                    [timeIsBooked('{{ time.0 }}') ? 'cursor-not-allowed bg-error hover:bg-error' : 'cursor-pointer']: true,
-                }">
-                <p>
-                    {{ time.0 }}
-                </p>
-                <p>
-                    {{ time.1 }}
-                </p>
-            </li>
+                <li class="rounded-lg p-1 text-center" @click="selectTime('{{ time.0 }}')" :class="{
+                        'bg-primary': ('{{ time.0 }}' === selectedTime),
+                        'hover:bg-base-200': ('{{ time.0 }}' !== selectedTime),
+                        [
+                            (
+                                Object.keys(bookedTimes)?.includes(selectedDate)
+                                && timeIsBooked('{{ time.0 }}')
+                            )
+                                ? 'cursor-not-allowed bg-error hover:bg-error'
+                                : 'cursor-pointer'
+                        ]: true,
+                    }">
+                    <p>
+                        {{ time.0 }}
+                    </p>
+                    <p>
+                        {{ time.1 }}
+                    </p>
+                </li>
             {% endfor %}
         </ul>
     </div>
