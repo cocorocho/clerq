@@ -8,6 +8,7 @@ services:
       dockerfile: ./docker/django/Dockerfile
     volumes:
       - ./server:/code/
+      - shared:/var/www/
     environment:
       - DJANGO_SETTINGS_MODULE=clerq.settings.prod
     depends_on:
@@ -23,9 +24,13 @@ services:
     container_name: clerq-nginx
     volumes:
       - ./nginx/default.conf.template:/etc/nginx/templates/default.conf.template
+      - shared:/var/www/
     image: nginx:latest
     command: ["nginx", "-g", "daemon off;"]
     depends_on:
       - django
     env_file:
       - .env
+
+volumes:
+  shared:
