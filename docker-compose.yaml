@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  django:
+    container_name: "clerq-django"
+    build:
+      context: .
+      dockerfile: ./docker/django/Dockerfile
+    volumes:
+      - ./server:/code/
+    environment:
+      - DJANGO_SETTINGS_MODULE=clerq.settings.prod
+    depends_on:
+      - redis
+
+  redis:
+    container_name: clerq-redis
+    image: redis:7-bookworm
+
+  nginx:
+    container_name: clerq-nginx
+    volumes:
+      - ./nginx/default.conf.template:/etc/nginx/templates/default.conf.template
+    image: nginx:latest
+    command: ["nginx", "-g", "daemon off;"]
+    depends_on:
+      - django
+    env_file:
+      - .env

@@ -1,6 +1,6 @@
-django
-django-allauth
-django-tinymce
-django-filter
-channels[daphne]
-channels-redis
+django==4.2.7
+django-allauth==0.58.2
+django-tinymce==3.6.1
+django-filter==23.5
+channels[daphne]==4.0.0
+channels-redis==4.1.0
