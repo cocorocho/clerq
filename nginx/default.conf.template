@@ -11,11 +11,11 @@ server {
     }
 
     location /static/ {
-        root /var/www;
+        root /var/www/static/;
     }
 
     location /media/ {
-        root /var/www;
+        root /var/www/media/;
     }
 
     access_log /var/log/nginx/clerq-access.log;
