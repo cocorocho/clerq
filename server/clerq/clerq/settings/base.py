@@ -147,6 +147,7 @@ LOGIN_REDIRECT_URL = "/dashboard/"
 # ALLAUTH
 ACCOUNT_SESSION_REMEMBER = False
 ACCOUNT_ADAPTER = "accounts.adapters.AccountAdapter"
+ACCOUNT_FORMS = {"login": "accounts.forms.LoginForm"}
 
 # Channels
 ASGI_APPLICATION = "clerq.asgi.application"

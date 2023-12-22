@@ -4,9 +4,11 @@ from datetime import timedelta
 from django.core.management.base import BaseCommand
 from django.utils.timezone import now
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 
 from appointments.models import Appointment
 from appointments.utils import get_appointment_periods
+from accounts.showcase import showcase_accounts
 
 
 class Command(BaseCommand):
@@ -15,15 +17,19 @@ class Command(BaseCommand):
     def create_mock_data(self) -> list[dict]:
         user_model = get_user_model()
 
-        try:
-            appointee = user_model.objects.filter(role="APTE").first()
-        except user_model.DoesNotExist:
-            raise Exception("No user with role APTE")
+        # Create users and permissions
+        for username, permissions in showcase_accounts.items():
+            user = user_model.objects.create_user(
+                username=username,
+                password=username,  # password is same as username
+            )
 
-        try:
-            appointer = user_model.objects.filter(role="APTR").first()
-        except user_model.DoesNotExist:
-            raise Exception("No user with role APTR")
+            for perm_string in permissions:
+                permission = Permission.objects.get(codename=perm_string)
+                user.user_permissions.add(permission)
+
+        appointer = user_model.objects.get(username="appointer")
+        appointee = user_model.objects.get(username="appointee")
 
         mock_data = [
             {

@@ -11,15 +11,20 @@
                 <div class="mt-4">
                     {{ form.login.label_tag }}
                     {{ form.login }}
+                    <small>
+                        {{ form.login.help_text }}
+                    </small>
                     {{ form.login.errors }}
                 </div>
                 <div class="mt-4">
                     {{ form.password.label_tag }}
                     {{ form.password }}
+                    <small>
+                        {{ form.password.help_text }}
+                    </small>
                     {{ form.password.errors }}
                 </div>
 
-                <!-- {{ form.as_p }} -->
                 {% if form.errors %}
                     <div class="mt-4">
                         {{ form.non_field_errors  }}
