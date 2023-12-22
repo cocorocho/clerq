@@ -132,7 +132,10 @@ STATIC_URL = "static/"
 STATIC_ROOT = "/var/www"
 STATICFILES_DIRS = [
     BASE_DIR / "staticfiles",
+    BASE_DIR / "node_tools" / "node_modules",
 ]
+MEDIA_ROOT = BASE_DIR / "mediafiles"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

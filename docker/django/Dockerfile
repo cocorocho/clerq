@@ -6,6 +6,7 @@ COPY ./server /code
 WORKDIR /code/clerq/node_tools
 
 RUN npm install
+RUN npm run tailwind-build
 
 # Django
 FROM python:3.10-slim
